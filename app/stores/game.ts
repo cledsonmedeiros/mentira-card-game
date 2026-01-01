@@ -1,18 +1,37 @@
 import { defineStore } from "pinia";
 
-type Player = { id: string; name: string; score: number };
+export type Player = { 
+  id: string; 
+  name: string; 
+  score: number;
+};
+
+interface GameState {
+  players: Player[];
+}
 
 export const useGameStore = defineStore("game", {
-  state: () => ({
-    players: [] as Player[],
+  state: (): GameState => ({
+    players: [],
   }),
+  getters: {
+    sortedPlayers: (state): Player[] => {
+      return [...state.players].sort((a, b) => b.score - a.score);
+    },
+    topPlayers(): Player[] {
+      return this.sortedPlayers.slice(0, 3);
+    },
+    totalPoints: (state): number => {
+      return state.players.reduce((sum, player) => sum + player.score, 0);
+    },
+  },
   actions: {
-    init() {
-      if (process.client) {
+    init(): void {
+      if (import.meta.client) {
         const raw = localStorage.getItem("mentira-game");
         if (raw) {
           try {
-            const data = JSON.parse(raw);
+            const data = JSON.parse(raw) as { players?: Player[] };
             this.players = data.players || [];
           } catch (e) {
             this.players = [];
@@ -30,30 +49,27 @@ export const useGameStore = defineStore("game", {
         });
       }
     },
-    addPlayer(name: string) {
-      const id =
-        typeof crypto !== "undefined" && (crypto as any).randomUUID
-          ? (crypto as any).randomUUID()
-          : String(Date.now());
+    addPlayer(name: string): void {
+      const id = crypto.randomUUID?.() ?? String(Date.now());
       this.players.push({ id, name, score: 0 });
     },
-    removePlayer(id: string) {
+    removePlayer(id: string): void {
       this.players = this.players.filter((p) => p.id !== id);
     },
-    inc(id: string) {
+    inc(id: string): void {
       const p = this.players.find((x) => x.id === id);
       if (p) p.score++;
     },
-    dec(id: string) {
+    dec(id: string): void {
       const p = this.players.find((x) => x.id === id);
       if (p) p.score--;
     },
-    resetScores() {
+    resetScores(): void {
       this.players.forEach((p) => (p.score = 0));
     },
-    clearAll() {
+    clearAll(): void {
       this.players = [];
-      if (process.client) localStorage.removeItem("mentira-game");
+      if (import.meta.client) localStorage.removeItem("mentira-game");
     },
   },
 });

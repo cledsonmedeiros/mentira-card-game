@@ -5,9 +5,7 @@
   >
     <div class="flex items-start gap-3">
       <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
+        <Icon name="heroicons:device-phone-mobile" class="w-6 h-6 text-white" />
       </div>
       <div class="flex-1">
         <h3 class="font-bold text-gray-800 mb-1">Instalar Aplicativo</h3>
@@ -31,9 +29,7 @@
         @click="dismiss"
         class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <Icon name="heroicons:x-mark" class="w-5 h-5" />
       </button>
     </div>
   </div>
