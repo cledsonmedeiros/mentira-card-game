@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl mx-auto">
+  <div class="max-w-3xl mx-auto h-full flex flex-col">
     <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -8,7 +8,7 @@
     </h2>
 
     <!-- Add Player Form -->
-    <form @submit.prevent="addPlayer" class="mb-8">
+    <form @submit.prevent="addPlayer" class="mb-6 flex-shrink-0">
       <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-md">
         <label class="block text-sm font-semibold text-gray-700 mb-3">Adicionar novo jogador</label>
         <div class="flex gap-3">
@@ -32,9 +32,9 @@
     </form>
 
     <!-- Players List -->
-    <div v-if="store.players.length > 0" class="mb-8">
-      <h3 class="text-lg font-bold text-gray-700 mb-4">{{ store.players.length }} jogador{{ store.players.length !== 1 ? 'es' : '' }}</h3>
-      <div class="space-y-3">
+    <div v-if="store.players.length > 0" class="flex-1 overflow-y-auto mb-4">
+      <h3 class="text-lg font-bold text-gray-700 mb-4 sticky top-0 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 py-2">{{ store.players.length }} jogador{{ store.players.length !== 1 ? 'es' : '' }}</h3>
+      <div class="space-y-3 pb-4">
         <div
           v-for="(p, index) in store.players"
           :key="p.id"
@@ -62,13 +62,13 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else class="py-12 text-center">
+    <div v-else class="flex-1 flex flex-col items-center justify-center text-center">
       <div class="text-6xl mb-4">👥</div>
       <p class="text-gray-600">Nenhum jogador adicionado ainda</p>
     </div>
 
     <!-- Action Buttons -->
-    <div class="grid grid-cols-2 gap-3 sticky bottom-24 bg-gradient-to-t from-purple-50 via-blue-50/95 to-transparent pt-6 -mx-4 px-4">
+    <div class="grid grid-cols-2 gap-3 flex-shrink-0 pt-4">
       <NuxtLink 
         to="/" 
         class="py-4 bg-white/80 backdrop-blur-sm text-gray-700 rounded-2xl font-semibold shadow-md hover:shadow-lg transition-all active:scale-95 text-center flex items-center justify-center gap-2"
