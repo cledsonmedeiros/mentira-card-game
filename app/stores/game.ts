@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { STORAGE_KEY } from "../utils/constants";
 
 export type Player = { 
   id: string; 
@@ -28,7 +29,7 @@ export const useGameStore = defineStore("game", {
   actions: {
     init(): void {
       if (import.meta.client) {
-        const raw = localStorage.getItem("mentira-game");
+        const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           try {
             const data = JSON.parse(raw) as { players?: Player[] };
@@ -40,7 +41,7 @@ export const useGameStore = defineStore("game", {
         this.$subscribe((_, state) => {
           try {
             localStorage.setItem(
-              "mentira-game",
+              STORAGE_KEY,
               JSON.stringify({ players: state.players })
             );
           } catch (e) {
@@ -69,7 +70,7 @@ export const useGameStore = defineStore("game", {
     },
     clearAll(): void {
       this.players = [];
-      if (import.meta.client) localStorage.removeItem("mentira-game");
+      if (import.meta.client) localStorage.removeItem(STORAGE_KEY);
     },
   },
 });

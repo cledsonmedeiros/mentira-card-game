@@ -40,11 +40,7 @@
 </template>
 
 <script setup lang="ts">
-interface Player {
-  id: string;
-  name: string;
-  score: number;
-}
+import type { Player } from '../stores/game';
 
 defineProps<{
   player: Player;
