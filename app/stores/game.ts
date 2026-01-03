@@ -9,11 +9,17 @@ export type Player = {
 
 interface GameState {
   players: Player[];
+  pointValue: number; // Valor em reais de cada ponto
+  gameFinished: boolean;
+  winnerId: string | null;
 }
 
 export const useGameStore = defineStore("game", {
   state: (): GameState => ({
     players: [],
+    pointValue: 0,
+    gameFinished: false,
+    winnerId: null,
   }),
   getters: {
     sortedPlayers: (state): Player[] => {
@@ -25,6 +31,21 @@ export const useGameStore = defineStore("game", {
     totalPoints: (state): number => {
       return state.players.reduce((sum, player) => sum + player.score, 0);
     },
+    totalMoney(): number {
+      return this.totalPoints * this.pointValue;
+    },
+    hasMonetaryValue: (state): boolean => {
+      return state.pointValue > 0;
+    },
+    winner: (state): Player | null => {
+      return state.players.find(p => p.id === state.winnerId) || null;
+    },
+    winnerPayout(): number {
+      if (!this.winner || !this.hasMonetaryValue) return 0;
+      // Vencedor recebe o valor de todos os outros jogadores
+      const otherPlayers = this.players.filter(p => p.id !== this.winnerId);
+      return otherPlayers.reduce((total, player) => total + (player.score * this.pointValue), 0);
+    },
   },
   actions: {
     init(): void {
@@ -32,17 +53,28 @@ export const useGameStore = defineStore("game", {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           try {
-            const data = JSON.parse(raw) as { players?: Player[] };
+            const data = JSON.parse(raw) as { players?: Player[]; pointValue?: number; gameFinished?: boolean; winnerId?: string | null };
             this.players = data.players || [];
+            this.pointValue = data.pointValue || 0;
+            this.gameFinished = data.gameFinished || false;
+            this.winnerId = data.winnerId || null;
           } catch (e) {
             this.players = [];
+            this.pointValue = 0;
+            this.gameFinished = false;
+            this.winnerId = null;
           }
         }
         this.$subscribe((_, state) => {
           try {
             localStorage.setItem(
               STORAGE_KEY,
-              JSON.stringify({ players: state.players })
+              JSON.stringify({ 
+                players: state.players, 
+                pointValue: state.pointValue,
+                gameFinished: state.gameFinished,
+                winnerId: state.winnerId
+              })
             );
           } catch (e) {
             // ignore
@@ -67,9 +99,24 @@ export const useGameStore = defineStore("game", {
     },
     resetScores(): void {
       this.players.forEach((p) => (p.score = 0));
+      this.gameFinished = false;
+      this.winnerId = null;
+    },
+    setPointValue(value: number): void {
+      this.pointValue = Math.max(0, value);
+    },
+    finishGame(winnerId: string): void {
+      this.gameFinished = true;
+      this.winnerId = winnerId;
+    },
+    startNewRound(): void {
+      this.resetScores();
     },
     clearAll(): void {
       this.players = [];
+      this.pointValue = 0;
+      this.gameFinished = false;
+      this.winnerId = null;
       if (import.meta.client) localStorage.removeItem(STORAGE_KEY);
     },
   },

@@ -16,3 +16,17 @@ export const BUTTON_STYLES = {
 } as const;
 
 export type ButtonVariant = keyof typeof BUTTON_STYLES;
+
+// Format currency
+export function formatCurrency(value: number): string {
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+  });
+}
+
+// Calculate monetary value
+export function getMonetaryValue(points: number, pointValue: number): number {
+  return points * pointValue;
+}

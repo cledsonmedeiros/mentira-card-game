@@ -20,8 +20,8 @@
 
     <!-- Players List -->
     <div v-else class="flex flex-col h-full">
-      <!-- Podium for top 3 -->
-      <PlayerPodium />
+      <!-- Game Finisher -->
+      <GameFinisher />
 
       <!-- All Players Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1 overflow-y-auto pb-4 content-start">
@@ -47,7 +47,7 @@
         <ActionButton 
           variant="danger"
           label="Novo Jogo"
-          icon="heroicons:trash"
+          icon="heroicons:trash-20-solid"
           @click="clearAll"
         />
       </div>

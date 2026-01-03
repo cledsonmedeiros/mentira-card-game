@@ -8,6 +8,9 @@
         <div class="flex-1 min-w-0">
           <div class="font-bold text-gray-800 text-sm truncate">{{ player.name }}</div>
           <div class="text-xl font-bold text-purple-600">{{ player.score }}</div>
+          <div v-if="store.hasMonetaryValue" class="text-xs text-green-600 font-semibold">
+            {{ formatCurrency(getMonetaryValue(player.score, store.pointValue)) }}
+          </div>
         </div>
       </div>
       
@@ -33,7 +36,7 @@
         @click="$emit('remove')"
         class="w-9 h-9 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all active:scale-95 flex items-center justify-center flex-shrink-0"
       >
-        <Icon name="heroicons:trash" class="w-5 h-5" />
+        <Icon name="heroicons:trash-20-solid" class="w-5 h-5" />
       </button>
     </div>
   </div>
@@ -41,6 +44,10 @@
 
 <script setup lang="ts">
 import type { Player } from '../stores/game';
+import { useGameStore } from '../stores/game';
+import { formatCurrency, getMonetaryValue } from '../utils/constants';
+
+const store = useGameStore();
 
 defineProps<{
   player: Player;
