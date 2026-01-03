@@ -6,20 +6,52 @@
       <h3 class="text-lg font-bold text-gray-800 mb-1">Vencedor!</h3>
       <div class="text-2xl font-bold text-purple-600 mb-3">{{ store.winner.name }}</div>
       
-      <div v-if="store.hasMonetaryValue" class="bg-white rounded-lg p-4 mb-4">
-        <div class="text-sm text-gray-600 mb-1">Recebe dos outros jogadores:</div>
-        <div class="text-3xl font-bold text-green-600">
-          {{ formatCurrency(store.winnerPayout) }}
+      <div v-if="store.hasMonetaryValue" class="space-y-3 mb-4">
+        <!-- Individual Losers -->
+        <div class="bg-white rounded-lg p-4">
+          <div class="text-xs font-semibold text-gray-500 mb-2">Cada jogador paga:</div>
+          <div class="space-y-1.5">
+            <div 
+              v-for="player in store.players.filter(p => p.id !== store.winnerId)"
+              :key="player.id"
+              class="flex items-center justify-between text-sm"
+            >
+              <span class="text-gray-700">{{ player.name }}</span>
+              <div class="text-right">
+                <span class="font-bold text-gray-800">{{ player.score }} pts</span>
+                <span class="text-red-600 font-semibold ml-2">
+                  {{ formatCurrency(getMonetaryValue(player.score, store.pointValue)) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total -->
+        <div class="bg-green-50 rounded-lg p-4 border-2 border-green-200">
+          <div class="text-sm text-gray-600 mb-1">Total recebido:</div>
+          <div class="text-3xl font-bold text-green-600">
+            {{ formatCurrency(store.winnerPayout) }}
+          </div>
         </div>
       </div>
 
-      <button
-        @click="store.startNewRound()"
-        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-      >
-        <Icon name="heroicons:arrow-path" class="w-5 h-5" />
-        Nova Rodada
-      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          @click="correctWinner"
+          class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <Icon name="heroicons:arrow-path" class="w-5 h-5" />
+          Corrigir
+        </button>
+        <button
+          @click="store.startNewRound()"
+          class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <Icon name="heroicons:arrow-path" class="w-5 h-5" />
+          Nova Rodada
+        </button>
+      </div>
     </div>
   </div>
 
@@ -77,5 +109,11 @@ const showWinnerSelection = ref(false);
 function selectWinner(playerId: string) {
   store.finishGame(playerId);
   showWinnerSelection.value = false;
+}
+
+function correctWinner() {
+  store.gameFinished = false;
+  store.winnerId = null;
+  showWinnerSelection.value = true;
 }
 </script>
